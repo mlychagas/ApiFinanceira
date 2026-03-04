@@ -83,15 +83,17 @@ namespace ApiTeste.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete(Guid id)
+        public ActionResult Remove(Guid id)
         {
             var despesa = listaDespesas.FirstOrDefault(d => d.Id == id);
             if (despesa is null)
             {
                 return NotFound(new { mensagem = $"Despesa #{id} não encontrado."});
             }
-           
-            return Ok(despesa);
+
+            listaDespesas.Remove(despesa);
+            return NoContent();
+            
         }
 
 
