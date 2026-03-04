@@ -18,6 +18,15 @@ namespace ApiTeste.Controllers
               DataVencimento =  new DateOnly(2026, 03 ,14),
               Situacao = "Aberto"
 
+          },
+          new Despesa
+          {
+              Descricao = "Água",
+              Categoria = "Moradia",
+              Valor = 50,
+              DataVencimento =  new DateOnly(2026, 03 ,09),
+              Situacao = "Aberto"
+
           }
         };
 
@@ -48,6 +57,40 @@ namespace ApiTeste.Controllers
         public ActionResult FindById(Guid id)
         {
             var despesa = listaDespesas.FirstOrDefault(d => d.Id == id);
+            if (despesa is null)
+            {
+                return NotFound(new { mensagem = $"Despesa #{id} não encontrado."});
+            }
+            return Ok(despesa);
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult Update(Guid id, [FromBody] DespesasUpdateDto despesaDto)
+        {
+            var despesa = listaDespesas.FirstOrDefault(d => d.Id == id);
+            if (despesa is null)
+            {
+                return NotFound(new { mensagem = $"Despesa #{id} não encontrado."});
+            }
+
+            despesa.Descricao = despesaDto.Descricao;
+            despesa.Categoria = despesaDto.Categoria;
+            despesa.Valor = despesaDto.Valor;
+            despesa.DataVencimento = despesaDto.DataVencimento;
+            despesa.Situacao = despesaDto.Situacao;
+            despesa.DataPagamento = despesaDto.DataPagamento;
+            return Ok(despesa);
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult Delete(Guid id)
+        {
+            var despesa = listaDespesas.FirstOrDefault(d => d.Id == id);
+            if (despesa is null)
+            {
+                return NotFound(new { mensagem = $"Despesa #{id} não encontrado."});
+            }
+           
             return Ok(despesa);
         }
 
