@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ApiTeste.Model;
-using ApiTeste.Dtos;
-namespace ApiTeste.Controllers
+using ApiFinanceira.Model;
+using ApiFinanceira.Dtos;
+
+namespace ApiFinanceira.Controllers
 {
     [Route("/despesa")]
     [ApiController]
@@ -59,7 +60,7 @@ namespace ApiTeste.Controllers
             var despesa = listaDespesas.FirstOrDefault(d => d.Id == id);
             if (despesa is null)
             {
-                return NotFound(new { mensagem = $"Despesa #{id} não encontrado."});
+                return NotFound(new { mensagem = $"Despesa #{id} não encontrada." });
             }
             return Ok(despesa);
         }
@@ -70,7 +71,7 @@ namespace ApiTeste.Controllers
             var despesa = listaDespesas.FirstOrDefault(d => d.Id == id);
             if (despesa is null)
             {
-                return NotFound(new { mensagem = $"Despesa #{id} não encontrado."});
+                return NotFound(new { mensagem = $"Despesa #{id} não encontrada." });
             }
 
             despesa.Descricao = despesaDto.Descricao;
@@ -88,14 +89,12 @@ namespace ApiTeste.Controllers
             var despesa = listaDespesas.FirstOrDefault(d => d.Id == id);
             if (despesa is null)
             {
-                return NotFound(new { mensagem = $"Despesa #{id} não encontrado."});
+                return NotFound(new { mensagem = $"Despesa #{id} não encontrada." });
             }
 
             listaDespesas.Remove(despesa);
             return NoContent();
             
         }
-
-
     }
 }
