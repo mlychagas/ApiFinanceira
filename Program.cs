@@ -1,4 +1,5 @@
 using ApiFinanceira.DataContexts;
+using ApiFinanceira.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,12 +10,15 @@ var connectionString = builder.Configuration.GetConnectionString("mysql");
 builder.Services.AddDbContext<AppDbContex>(
     options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
 );
-// new MySqlServerVersion(new Version(8,0,3) para não quebrar a API
+// new MySqlServerVersion(new Version(8,0,32) em vez de ServerVersion.AutoDetect(connectionString)
+// para não quebrar a API
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<DespesaService>();
 
 var app = builder.Build();
 
