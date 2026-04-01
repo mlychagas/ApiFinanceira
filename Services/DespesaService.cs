@@ -2,6 +2,7 @@
 using ApiFinanceira.Dtos;
 using ApiFinanceira.Exceptions;
 using ApiFinanceira.Model;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,10 +13,14 @@ namespace ApiFinanceira.Services
     {
         private readonly AppDbContex _context;
 
-        public DespesaService(AppDbContex context)
+        private readonly IMapper _mapper;
+
+        public DespesaService(AppDbContex context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
+
         public async Task<ICollection<Despesa>> FindAll()
         {
             try
@@ -29,18 +34,13 @@ namespace ApiFinanceira.Services
                 throw;
             }
         }
+
         public async Task<Despesa> Create(DespesaDto novaDespesa)
         {
             try
             {
-                var despesa = new Despesa
-                {
-                    Descricao = novaDespesa.Descricao,
-                    Valor = novaDespesa.Valor,
-                    Categoria = novaDespesa.Categoria,
-                    DataVencimento = novaDespesa.DataVencimento,
-                    Situacao = "pendente"
-                };
+                var despesa = _mapper.Map<Despesa>(novaDespesa);
+
                 await _context.Despesas.AddAsync(despesa);
                 await _context.SaveChangesAsync();
                 return despesa;
@@ -77,13 +77,8 @@ namespace ApiFinanceira.Services
             try
             {
                 var despesa = await FindById(id);
-                                
-                despesa.Descricao = despesaDto.Descricao;
-                despesa.Valor = despesaDto.Valor;
-                despesa.DataVencimento = despesaDto.DataVencimento;
-                despesa.Categoria = despesaDto.Categoria;
-                despesa.Situacao = despesaDto.Situacao;
-                despesa.DataPagamento = despesaDto.DataPagamento;
+
+                _mapper.Map<DespesasUpdateDto, Despesa>(despesaDto, despesa);
 
                 _context.Despesas.Update(despesa);
                 await _context.SaveChangesAsync();
@@ -95,8 +90,7 @@ namespace ApiFinanceira.Services
             }
 
         }
-
-        
+               
 
         public async Task<ActionResult> Remove(int id)
         {
