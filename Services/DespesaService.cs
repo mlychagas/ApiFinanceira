@@ -5,6 +5,7 @@ using ApiFinanceira.Model;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ApiFinanceira.Services
 {
@@ -25,7 +26,9 @@ namespace ApiFinanceira.Services
         {
             try
             {
-                return await _context.Despesas.ToListAsync();
+                return await _context.Despesas
+                    .Include(d => d.Categoria)
+                    .ToListAsync();
 
             }
             catch (Exception)
@@ -35,11 +38,18 @@ namespace ApiFinanceira.Services
             }
         }
 
-        public async Task<Despesa> Create(DespesaDto novaDespesa)
+        public async Task<Despesa> Create(DespesaDto data)
         {
             try
             {
-                var despesa = _mapper.Map<Despesa>(novaDespesa);
+                var categoriaExiste = await _context.Categorias.AnyAsync(
+                    x => x.Id == data.CategoriaId);
+                if (!categoriaExiste)
+                {
+                    throw new ErrorServiceException($"Categoria não encontrada.",
+                    c => c.NotFound(new { mensagem = $"Categoria #{data.CategoriaId} não encontrada." }));
+                }
+                var despesa = _mapper.Map<Despesa>(data);
 
                 await _context.Despesas.AddAsync(despesa);
                 await _context.SaveChangesAsync();
@@ -72,13 +82,20 @@ namespace ApiFinanceira.Services
 
         }
 
-        public async Task<Despesa> Update(int id, DespesasUpdateDto despesaDto)
+        public async Task<Despesa> Update(int id, DespesasUpdateDto data)
         {
             try
             {
                 var despesa = await FindById(id);
+                var categoriaExiste = await _context.Categorias.AnyAsync(
+                    x => x.Id == data.CategoriaId);
+                if (!categoriaExiste)
+                {
+                    throw new ErrorServiceException($"Categoria não encontrada.",
+                    c => c.NotFound(new { mensagem = $"Categoria #{data.CategoriaId} não encontrada." }));
+                }
 
-                _mapper.Map<DespesasUpdateDto, Despesa>(despesaDto, despesa);
+                _mapper.Map<DespesasUpdateDto, Despesa>(data, despesa);
 
                 _context.Despesas.Update(despesa);
                 await _context.SaveChangesAsync();

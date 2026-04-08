@@ -9,7 +9,7 @@ namespace ApiFinanceira.Dtos
         public required string Descricao { get; set; }
         
         [Required(ErrorMessage = "Categoria é obrigatório")]
-        public required string Categoria { get; set; }
+        public required int CategoriaId { get; set; }
         
         [Required(ErrorMessage = "Valor é obrigatório")]
         [Range(0.01, double.MaxValue, ErrorMessage = "O valor deve ser maior que zero")]

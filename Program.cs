@@ -2,6 +2,7 @@ using ApiFinanceira.DataContexts;
 using ApiFinanceira.Profiles;
 using ApiFinanceira.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,15 @@ var connectionString = builder.Configuration.GetConnectionString("mysql");
 builder.Services.AddDbContext<AppDbContex>(
     options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
 );
+
+// ignorar ciclos de referência e formatar o JSON de forma legível
+builder.Services.AddControllers().AddJsonOptions(
+    options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
+
 // new MySqlServerVersion(new Version(8,0,32) em vez de ServerVersion.AutoDetect(connectionString)
 // para não quebrar a API
 
