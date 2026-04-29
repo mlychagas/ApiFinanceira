@@ -17,5 +17,15 @@ namespace ApiFinanceira.Dtos
         
         [Required(ErrorMessage = "DataVencimento é obrigatório")]
         public DateOnly DataVencimento { get; set; }
+
+
     }
+
+    public class DespesaTagDto 
+    {
+        [Required(ErrorMessage = "Tags é obrigatório")]
+        public required List<int> Tags { get; set; }
+    
+    }
+
 }

@@ -69,8 +69,6 @@ namespace ApiFinanceira.Controllers
             }
         }
 
-        
-
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] DespesasUpdateDto despesaDto)
         {
@@ -90,6 +88,20 @@ namespace ApiFinanceira.Controllers
 
         }
 
+        [HttpPost("{id}/tags")]
+        public async Task<IActionResult> AddTags(int id, [FromBody] DespesaTagDto tag)
+        {
+            try
+            {
+                var despesa = await _servise.AddTags(id, tag);
+                return Ok();
+            }
+            catch (Exception ex )
+            {
+                return Problem(ex.Message);
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<ActionResult> Remove(int id)
         {
@@ -105,90 +117,5 @@ namespace ApiFinanceira.Controllers
         }
 
 
-
-
-        //public static List<Despesa> listaDespesas = new()
-        //{
-        //  new Despesa
-        //  {
-        //      Descricao = "Internet",
-        //      Categoria = "Moradia",
-        //      Valor = 150,
-        //      DataVencimento =  new DateOnly(2026, 03 ,14),
-        //      Situacao = "Aberto"
-
-        //  },
-        //  new Despesa
-        //  {
-        //      Descricao = "Água",
-        //      Categoria = "Moradia",
-        //      Valor = 50,
-        //      DataVencimento =  new DateOnly(2026, 03 ,09),
-        //      Situacao = "Aberto"
-
-        //  }
-        //};
-
-
-
-        //[HttpPost()]
-        //public ActionResult Create(string id, [FromBody] DespesaDto novaDespesa)
-        //{
-        //    var despesa = new Despesa
-        //    {
-        //        Descricao = novaDespesa.Descricao,
-        //        Valor = novaDespesa.Valor,
-        //        Categoria = novaDespesa.Categoria,
-        //        DataVencimento = novaDespesa.DataVencimento,
-        //        Situacao = "Aberto"
-        //    };
-
-        //    listaDespesas.Add(despesa);
-
-        //    return Created("", despesa);
-        //}
-
-        //[HttpGet("{id}")]
-        //public ActionResult FindById(Guid id)
-        //{
-        //    var despesa = listaDespesas.FirstOrDefault(d => d.Id == id);
-        //    if (despesa is null)
-        //    {
-        //        return NotFound(new { mensagem = $"Despesa #{id} não encontrada." });
-        //    }
-        //    return Ok(despesa);
-        //}
-
-        //[HttpPut("{id}")]
-        //public ActionResult Update(Guid id, [FromBody] DespesasUpdateDto despesaDto)
-        //{
-        //    var despesa = listaDespesas.FirstOrDefault(d => d.Id == id);
-        //    if (despesa is null)
-        //    {
-        //        return NotFound(new { mensagem = $"Despesa #{id} não encontrada." });
-        //    }
-
-        //    despesa.Descricao = despesaDto.Descricao;
-        //    despesa.Categoria = despesaDto.Categoria;
-        //    despesa.Valor = despesaDto.Valor;
-        //    despesa.DataVencimento = despesaDto.DataVencimento;
-        //    despesa.Situacao = despesaDto.Situacao;
-        //    despesa.DataPagamento = despesaDto.DataPagamento;
-        //    return Ok(despesa);
-        //}
-
-        //[HttpDelete("{id}")]
-        //public ActionResult Remove(Guid id)
-        //{
-        //    var despesa = listaDespesas.FirstOrDefault(d => d.Id == id);
-        //    if (despesa is null)
-        //    {
-        //        return NotFound(new { mensagem = $"Despesa #{id} não encontrada." });
-        //    }
-
-        //    listaDespesas.Remove(despesa);
-        //    return NoContent();
-
-        //}
     }
 }

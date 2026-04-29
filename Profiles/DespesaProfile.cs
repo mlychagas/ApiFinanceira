@@ -1,4 +1,5 @@
 ﻿using ApiFinanceira.Dtos;
+using ApiFinanceira.Dtos.Responses;
 using ApiFinanceira.Model;
 using AutoMapper;
 namespace ApiFinanceira.Profiles
@@ -12,13 +13,12 @@ namespace ApiFinanceira.Profiles
 
             CreateMap<DespesasUpdateDto, Despesa>();
 
-            //CreateMap<DespesasUpdateDto, Despesa>()
-            //    .ForMember(
-            //        dest => dest.DataPagamento,
-            //        opt => opt.MapFrom(
-            //            src => src.DataPagamento
-            //        )
-            //    );
+            CreateMap<Tag, TagResponseDto>();
+
+            CreateMap<Categoria, CategoriaResponseDto>();
+
+            CreateMap<Despesa, DespesaResponseDto>()
+                .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags));
         }
     }
 }

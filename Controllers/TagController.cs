@@ -1,0 +1,38 @@
+﻿using ApiFinanceira.DataContexts;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace ApiFinanceira.Controllers
+{
+    [Route("/tags")]
+    [ApiController]
+    public class TagController : ControllerBase
+    {
+        private readonly AppDbContex _context;
+        public TagController(AppDbContex context)
+        {
+            _context = context;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> FindAll()
+        {
+            try
+            {
+                var tags = await _context.Tags.ToListAsync();
+                return Ok(tags);
+            }
+            catch (Exception ex)
+            {
+                return Problem($"Ocorreram alguns erros: {ex}.");
+            }
+                     
+        }
+
+        
+
+
+    }
+}

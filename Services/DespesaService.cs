@@ -1,8 +1,10 @@
 ﻿using ApiFinanceira.DataContexts;
 using ApiFinanceira.Dtos;
+using ApiFinanceira.Dtos.Responses;
 using ApiFinanceira.Exceptions;
 using ApiFinanceira.Model;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -22,18 +24,22 @@ namespace ApiFinanceira.Services
             _mapper = mapper;
         }
 
-        public async Task<ICollection<Despesa>> FindAll()
+        public async Task<ICollection<DespesaResponseDto>> FindAll()
         {
             try
             {
-                return await _context.Despesas
-                    .Include(d => d.Categoria)
-                    .ToListAsync();
+                //var list = await _context.Despesas
+                //    .Include(d => d.Categoria)
+                //    .ToListAsync();
 
+                //return _mapper.Map<ICollection<DespesaResponseDto>>(list);
+
+                return await _context.Despesas
+                    .ProjectTo<DespesaResponseDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync();
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -66,12 +72,14 @@ namespace ApiFinanceira.Services
         {
             try
             {
-                var despesa = await _context.Despesas.FirstOrDefaultAsync(x => x.Id == id);
+                var despesa = await _context.Despesas
+                    .Include(x => x.Tags)  
+                    .FirstOrDefaultAsync(x => x.Id == id);
 
                 if (despesa is null)
                 {
                     throw new ErrorServiceException($"Despesa #{id} não encontrada.", 
-                    c => c.NotFound (new{ mensagem = $"Despesa #{id} não encontrada."}));
+                    c => c.NotFound(new{ mensagem = $"Despesa #{id} não encontrada."}));
                 }
                 return despesa;
             }
@@ -106,8 +114,7 @@ namespace ApiFinanceira.Services
                 throw;
             }
 
-        }
-               
+        }     
 
         public async Task<ActionResult> Remove(int id)
         {
@@ -126,10 +133,43 @@ namespace ApiFinanceira.Services
             }
         }
 
+        public async Task<Despesa> AddTags(int id, DespesaTagDto tag)
+        {
 
+            try
+            {
+                var despesa = await FindById(id);
+                var tags = await _context.Tags.Where(x => tag.Tags.Contains(x.Id)).ToListAsync();
 
+                if (tags.Count == 0)
+                {
+                    throw new ErrorServiceException($"Tags não encontrada.",
+                    c => c.NotFound(new { mensagem = $"Tags não encontrada." }));
+                }
 
+                foreach (Tag _tag in tags)
+                {
+                    if(despesa.Tags.Any(t => t.Id != _tag.Id))
+                    {
+                        despesa.Tags.Add(_tag);
+                    }
+                    
+                }
+                    
+                await _context.SaveChangesAsync();
 
+                return despesa;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            
+
+            throw new NotImplementedException();
+        }
     }//
 
 }//

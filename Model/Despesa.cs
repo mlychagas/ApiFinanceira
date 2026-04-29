@@ -25,6 +25,8 @@ namespace ApiFinanceira.Model
         [Column("categoria_id")]
         public int? CategoriaId { get; set; }
         public virtual Categoria? Categoria { get; set; }
+
+        public ICollection<Tag>? Tags { get; set; }
     }
 
 }
