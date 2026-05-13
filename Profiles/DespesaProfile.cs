@@ -19,6 +19,8 @@ namespace ApiFinanceira.Profiles
 
             CreateMap<Despesa, DespesaResponseDto>()
                 .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags));
+
+
         }
     }
 }

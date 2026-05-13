@@ -3,15 +3,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiFinanceira.DataContexts
 {
-    public class AppDbContex : DbContext
+    public class AppDbContext : DbContext
     {
-        public AppDbContex(DbContextOptions<AppDbContex> options) : base(options) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Despesa> Despesas { get; set; }
 
         public DbSet<Categoria> Categorias { get; set; }
 
         public DbSet<Tag> Tags{get; set; }
+        public object Usuarios { get; internal set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

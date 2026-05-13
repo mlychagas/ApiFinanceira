@@ -10,8 +10,8 @@ namespace ApiFinanceira.Controllers
     [ApiController]
     public class TagController : ControllerBase
     {
-        private readonly AppDbContex _context;
-        public TagController(AppDbContex context)
+        private readonly AppDbContext _context;
+        public TagController(AppDbContext context)
         {
             _context = context;
         }

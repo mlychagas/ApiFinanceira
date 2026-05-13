@@ -6,16 +6,18 @@ using ApiFinanceira.DataContexts;
 using Microsoft.EntityFrameworkCore;
 using ApiFinanceira.Services;
 using ApiFinanceira.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiFinanceira.Controllers
 {
     [Route("/despesa")]
     [ApiController]
+    [Authorize]
     public class DespesaController : ControllerBase
     {
-        private readonly AppDbContex _context;
+        private readonly AppDbContext _context;
         private readonly DespesaService _servise;
-        public DespesaController( DespesaService service ,AppDbContex context)
+        public DespesaController( DespesaService service ,AppDbContext context)
         {
             _context = context;
             _servise = service;

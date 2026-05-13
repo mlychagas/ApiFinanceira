@@ -14,11 +14,11 @@ namespace ApiFinanceira.Services
 
     public class DespesaService
     {
-        private readonly AppDbContex _context;
+        private readonly AppDbContext _context;
 
         private readonly IMapper _mapper;
 
-        public DespesaService(AppDbContex context, IMapper mapper)
+        public DespesaService(AppDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
